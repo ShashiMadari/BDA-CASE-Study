@@ -1,0 +1,248 @@
+Microsoft Windows [Version 10.0.26100.6584]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\shash>mongosh
+Current Mongosh Log ID: 690dc4fc3b7c1afb8963b111
+Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.5.9
+Using MongoDB:          8.2.1
+Using Mongosh:          2.5.9
+
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
+
+
+To help improve our products, anonymous usage data is collected and sent to MongoDB periodically (https://www.mongodb.com/legal/privacy-policy).
+You can opt-out by running the disableTelemetry() command.
+
+------
+   The server generated these startup warnings when booting
+   2025-11-07T09:13:17.198+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+------
+
+test> use heart_db
+switched to db heart_db
+heart_db> show collections
+heart_data
+heart_db> db.heart_data.find().limit(5).pretty()
+[
+  {
+    _id: ObjectId('690db3bde3d6e6059d3dd388'),
+    age: 52,
+    sex: 'Male',
+    chest_pain_type: 'Typical angina',
+    resting_blood_pressure: 125,
+    cholestoral: 212,
+    fasting_blood_sugar: 'Lower than 120 mg/ml',
+    rest_ecg: 'ST-T wave abnormality',
+    Max_heart_rate: 168,
+    exercise_induced_angina: 'No',
+    oldpeak: 1,
+    slope: 'Downsloping',
+    vessels_colored_by_flourosopy: 'Two',
+    thalassemia: 'Reversable Defect',
+    target: 0
+  },
+  {
+    _id: ObjectId('690db3bde3d6e6059d3dd389'),
+    age: 53,
+    sex: 'Male',
+    chest_pain_type: 'Typical angina',
+    resting_blood_pressure: 140,
+    cholestoral: 203,
+    fasting_blood_sugar: 'Greater than 120 mg/ml',
+    rest_ecg: 'Normal',
+    Max_heart_rate: 155,
+    exercise_induced_angina: 'Yes',
+    oldpeak: 3.1,
+    slope: 'Upsloping',
+    vessels_colored_by_flourosopy: 'Zero',
+    thalassemia: 'Reversable Defect',
+    target: 0
+  },
+  {
+    _id: ObjectId('690db3bde3d6e6059d3dd38a'),
+    age: 70,
+    sex: 'Male',
+    chest_pain_type: 'Typical angina',
+    resting_blood_pressure: 145,
+    cholestoral: 174,
+    fasting_blood_sugar: 'Lower than 120 mg/ml',
+    rest_ecg: 'ST-T wave abnormality',
+    Max_heart_rate: 125,
+    exercise_induced_angina: 'Yes',
+    oldpeak: 2.6,
+    slope: 'Upsloping',
+    vessels_colored_by_flourosopy: 'Zero',
+    thalassemia: 'Reversable Defect',
+    target: 0
+  },
+  {
+    _id: ObjectId('690db3bde3d6e6059d3dd38b'),
+    age: 61,
+    sex: 'Male',
+    chest_pain_type: 'Typical angina',
+    resting_blood_pressure: 148,
+    cholestoral: 203,
+    fasting_blood_sugar: 'Lower than 120 mg/ml',
+    rest_ecg: 'ST-T wave abnormality',
+    Max_heart_rate: 161,
+    exercise_induced_angina: 'No',
+    oldpeak: 0,
+    slope: 'Downsloping',
+    vessels_colored_by_flourosopy: 'One',
+    thalassemia: 'Reversable Defect',
+    target: 0
+  },
+  {
+    _id: ObjectId('690db3bde3d6e6059d3dd38c'),
+    age: 62,
+    sex: 'Female',
+    chest_pain_type: 'Typical angina',
+    resting_blood_pressure: 138,
+    cholestoral: 294,
+    fasting_blood_sugar: 'Greater than 120 mg/ml',
+    rest_ecg: 'ST-T wave abnormality',
+    Max_heart_rate: 106,
+    exercise_induced_angina: 'No',
+    oldpeak: 1.9,
+    slope: 'Flat',
+    vessels_colored_by_flourosopy: 'Three',
+    thalassemia: 'Fixed Defect',
+    target: 0
+  }
+]
+heart_db> // Map string values to numbers
+... var vesselMapping = { "Zero":0, "One":1, "Two":2, "Three":3 };
+...
+... // Update documents based on mapping
+... for (var key in vesselMapping) {
+...     db.heart_data.updateMany(
+...         { vessels_colored_by_flourosopy: key },
+...         { $set: { vessels_colored_by_flourosopy: vesselMapping[key] } }
+...     );
+... }
+...
+... // Fill any unexpected or null values with 0
+... db.heart_data.updateMany(
+...     { vessels_colored_by_flourosopy: { $exists: false } },
+...     { $set: { vessels_colored_by_flourosopy: 0 } }
+... );
+... db.heart_data.updateMany(
+...     { vessels_colored_by_flourosopy: null },
+...     { $set: { vessels_colored_by_flourosopy: 0 } }
+... );
+...
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+heart_db> db.heart_data.find({}, {vessels_colored_by_flourosopy:1, _id:0}).limit(10)
+[
+  { vessels_colored_by_flourosopy: 2 },
+  { vessels_colored_by_flourosopy: 0 },
+  { vessels_colored_by_flourosopy: 0 },
+  { vessels_colored_by_flourosopy: 1 },
+  { vessels_colored_by_flourosopy: 3 },
+  { vessels_colored_by_flourosopy: 0 },
+  { vessels_colored_by_flourosopy: 3 },
+  { vessels_colored_by_flourosopy: 1 },
+  { vessels_colored_by_flourosopy: 0 },
+  { vessels_colored_by_flourosopy: 2 }
+]
+heart_db> var numericFields = ["age", "resting_blood_pressure", "cholestoral", "Max_heart_rate", "oldpeak"];
+...
+... numericFields.forEach(function(field) {
+...     // Compute mean of the field
+...     var meanValue = db.heart_data.aggregate([
+...         { $match: { [field]: { $ne: null } } },
+...         { $group: { _id: null, avg: { $avg: "$" + field } } }
+...     ]).toArray()[0].avg;
+...
+...     // Fill missing or non-existing values with mean
+...     db.heart_data.updateMany(
+...         { [field]: { $exists: false } },
+...         { $set: { [field]: meanValue } }
+...     );
+...
+...     db.heart_data.updateMany(
+...         { [field]: null },
+...         { $set: { [field]: meanValue } }
+...     );
+... });
+...
+
+heart_db> db.heart_data.find({}, {age:1, _id:0}).limit(10)
+[
+  { age: 52 }, { age: 53 },
+  { age: 70 }, { age: 61 },
+  { age: 62 }, { age: 58 },
+  { age: 58 }, { age: 55 },
+  { age: 46 }, { age: 54 }
+]
+heart_db> var categoricalFields = ["sex", "chest_pain_type", "fasting_blood_sugar", "rest_ecg", "exercise_induced_angina", "slope", "thalassemia"];
+...
+... categoricalFields.forEach(function(field) {
+...     // Compute mode
+...     var modeVal = db.heart_data.aggregate([
+...         { $group: { _id: "$" + field, count: { $sum: 1 } } },
+...         { $sort: { count: -1 } },
+...         { $limit: 1 }
+...     ]).toArray()[0]._id;
+...
+...     // Fill missing or non-existing values with mode
+...     db.heart_data.updateMany(
+...         { [field]: { $exists: false } },
+...         { $set: { [field]: modeVal } }
+...     );
+...
+...     db.heart_data.updateMany(
+...         { [field]: null },
+...         { $set: { [field]: modeVal } }
+...     );
+... });
+...
+
+heart_db> db.heart_data.find({}, {sex:1, _id:0}).limit(10)
+[
+  { sex: 'Male' },
+  { sex: 'Male' },
+  { sex: 'Male' },
+  { sex: 'Male' },
+  { sex: 'Female' },
+  { sex: 'Female' },
+  { sex: 'Male' },
+  { sex: 'Male' },
+  { sex: 'Male' },
+  { sex: 'Male' }
+]
+heart_db> db.heart_data.deleteMany({ target: null });
+{ acknowledged: true, deletedCount: 0 }
+heart_db> db.heart_data.find({}, {target:1, _id:0}).limit(10)
+[
+  { target: 0 },
+  { target: 0 },
+  { target: 0 },
+  { target: 0 },
+  { target: 0 },
+  { target: 1 },
+  { target: 0 },
+  { target: 0 },
+  { target: 0 },
+  { target: 0 }
+]
+heart_db> // Update any 'Four' values to 4
+... db.heart_data.updateMany(
+...     { vessels_colored_by_flourosopy: "Four" },
+...     { $set: { vessels_colored_by_flourosopy: 4 } }
+... );
+...
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 18,
+  modifiedCount: 18,
+  upsertedCount: 0
+}
+heart_db>

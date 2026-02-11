@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Heart Disease Analytics Dashboard</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #f3f9ff, #e8f0fe);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 95%;
+            margin: auto;
+            padding: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0d47a1;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0px 8px 18px rgba(0,0,0,0.15);
+        }
+
+        .chart-title {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #37474f;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .back-btn {
+            display: block;
+            width: 220px;
+            margin: 40px auto 10px;
+            padding: 12px;
+            background: #1976d2;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: #0d47a1;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>📊 Heart Disease Analytics Dashboard</h2>
+
+    <div class="grid">
+
+        <!-- 1. Disease Distribution -->
+        <div class="card">
+            <div class="chart-title">Heart Disease Distribution</div>
+            <canvas id="diseaseChart"></canvas>
+        </div>
+
+        <!-- 2. Age vs Disease -->
+        <div class="card">
+            <div class="chart-title">Age vs Heart Disease</div>
+            <canvas id="ageChart"></canvas>
+        </div>
+
+        <!-- 3. Cholesterol vs Disease -->
+        <div class="card">
+            <div class="chart-title">Cholesterol vs Heart Disease</div>
+            <canvas id="cholChart"></canvas>
+        </div>
+
+        <!-- 4. Blood Pressure vs Disease -->
+        <div class="card">
+            <div class="chart-title">Blood Pressure vs Heart Disease</div>
+            <canvas id="bpChart"></canvas>
+        </div>
+
+        <!-- 5. Max Heart Rate vs Disease -->
+        <div class="card">
+            <div class="chart-title">Max Heart Rate vs Disease</div>
+            <canvas id="hrChart"></canvas>
+        </div>
+
+        <!-- 6. Chest Pain Distribution -->
+        <div class="card">
+            <div class="chart-title">Chest Pain Type Distribution</div>
+            <canvas id="cpChart"></canvas>
+        </div>
+
+        <!-- 7. Sex vs Disease -->
+        <div class="card">
+            <div class="chart-title">Sex vs Heart Disease</div>
+            <canvas id="sexChart"></canvas>
+        </div>
+
+        <!-- 8. Fasting Blood Sugar vs Disease -->
+        <div class="card">
+            <div class="chart-title">Fasting Blood Sugar vs Disease</div>
+            <canvas id="fbsChart"></canvas>
+        </div>
+
+    </div>
+
+    <a href="/" class="back-btn">⬅ Back to Home</a>
+
+</div>
+
+<script>
+fetch("/chart-data")
+.then(res => res.json())
+.then(data => {
+
+    /* 1️⃣ Disease Distribution */
+    new Chart(diseaseChart, {
+        type: "bar",
+        data: {
+            labels: data.target_labels,
+            datasets: [{
+                data: data.target_counts,
+                backgroundColor: ["#43a047", "#e53935"]
+            }]
+        },
+        options: { plugins: { legend: { display: false } } }
+    });
+
+    /* 2️⃣ Age vs Disease */
+    new Chart(ageChart, {
+        type: "scatter",
+        data: {
+            datasets: [{
+                data: data.age.map((a, i) => ({ x: a, y: data.age_target[i] })),
+                backgroundColor: "#1e88e5"
+            }]
+        },
+        options: {
+            scales: {
+                x: { title: { display: true, text: "Age" } },
+                y: { title: { display: true, text: "Disease (0/1)" }, ticks: { stepSize: 1 } }
+            }
+        }
+    });
+
+    /* 3️⃣ Cholesterol vs Disease */
+    new Chart(cholChart, {
+        type: "scatter",
+        data: {
+            datasets: [{
+                data: data.chol.map((c, i) => ({ x: c, y: data.chol_target[i] })),
+                backgroundColor: "#6a1b9a"
+            }]
+        },
+        options: {
+            scales: {
+                x: { title: { display: true, text: "Cholesterol" } },
+                y: { title: { display: true, text: "Disease (0/1)" }, ticks: { stepSize: 1 } }
+            }
+        }
+    });
+
+    /* 4️⃣ Blood Pressure vs Disease */
+    new Chart(bpChart, {
+        type: "scatter",
+        data: {
+            datasets: [{
+                data: data.bp.map((b, i) => ({ x: b, y: data.bp_target[i] })),
+                backgroundColor: "#ef6c00"
+            }]
+        },
+        options: {
+            scales: {
+                x: { title: { display: true, text: "Blood Pressure" } },
+                y: { title: { display: true, text: "Disease (0/1)" }, ticks: { stepSize: 1 } }
+            }
+        }
+    });
+
+    /* 5️⃣ Max Heart Rate vs Disease */
+    new Chart(hrChart, {
+        type: "scatter",
+        data: {
+            datasets: [{
+                data: data.thalach.map((h, i) => ({ x: h, y: data.thalach_target[i] })),
+                backgroundColor: "#00897b"
+            }]
+        },
+        options: {
+            scales: {
+                x: { title: { display: true, text: "Max Heart Rate" } },
+                y: { title: { display: true, text: "Disease (0/1)" }, ticks: { stepSize: 1 } }
+            }
+        }
+    });
+
+    /* 6️⃣ Chest Pain Distribution */
+    new Chart(cpChart, {
+        type: "pie",
+        data: {
+            labels: data.cp_labels,
+            datasets: [{
+                data: data.cp_counts,
+                backgroundColor: ["#42a5f5", "#ab47bc", "#ffa726", "#ef5350"]
+            }]
+        }
+    });
+
+    /* 7️⃣ Sex vs Disease */
+    new Chart(sexChart, {
+        type: "bar",
+        data: {
+            labels: ["Male No", "Male Yes", "Female No", "Female Yes"],
+            datasets: [{
+                data: Object.values(data.sex_disease),
+                backgroundColor: "#5c6bc0"
+            }]
+        }
+    });
+
+    /* 8️⃣ FBS vs Disease */
+    new Chart(fbsChart, {
+        type: "bar",
+        data: {
+            labels: ["Normal No", "Normal Yes", "High No", "High Yes"],
+            datasets: [{
+                data: Object.values(data.fbs_disease),
+                backgroundColor: "#26a69a"
+            }]
+        }
+    });
+
+});
+</script>
+
+</body>
+</html>

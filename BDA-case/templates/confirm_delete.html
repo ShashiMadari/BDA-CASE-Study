@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Delete</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #ffebee, #ffffff);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 450px;
+            margin: 80px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0px 8px 18px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+
+        h3 {
+            color: #c62828;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+
+        .danger-btn {
+            width: 100%;
+            padding: 12px;
+            background: #d32f2f;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .danger-btn:hover {
+            background: #b71c1c;
+        }
+
+        .cancel-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .cancel-link:hover {
+            text-decoration: underline;
+        }
+
+        .warning {
+            font-size: 14px;
+            color: #555;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h3>⚠️ Confirm Patient Deletion</h3>
+
+    <p><strong>Name:</strong> {{ patient.name }}</p>
+    <p><strong>Age:</strong> {{ patient.age }}</p>
+    <p><strong>Cholesterol:</strong> {{ patient.chol }}</p>
+
+    <p class="warning">
+        This action <strong>cannot be undone</strong>.
+    </p>
+
+    <form action="/delete" method="post">
+        <!-- REQUIRED hidden fields -->
+        <input type="hidden" name="name" value="{{ patient.name }}">
+        <input type="hidden" name="age" value="{{ patient.age }}">
+
+        <button type="submit" class="danger-btn">❌ Confirm Delete</button>
+    </form>
+
+    <a href="/" class="cancel-link">⬅ Cancel & Go Back</a>
+
+</div>
+
+</body>
+</html>
