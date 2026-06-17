@@ -133,13 +133,13 @@ BDA-case/
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/ShashiMadari/project2.git
+git clone https://github.com/ShashiMadari/BDA-CASE-Study.git
 ```
 
 ### Navigate to the Project Directory
 
 ```bash
-cd project2/BDA-case
+cd BDA-CASE-Study/BDA-case
 ```
 
 ### Create a Virtual Environment
