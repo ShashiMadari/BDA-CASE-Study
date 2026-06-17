@@ -39,29 +39,64 @@ The primary goals of this case study are:
 ```text
 BDA-case/
 │
-├── data/
-│   ├── raw/                     # Original datasets
-│   └── processed/               # Cleaned and transformed datasets
+├── templates/
+│   ├── confirm_delete.html
+│   ├── dashboard.html
+│   ├── index.html
+│   └── result.html
 │
-├── notebooks/
-│   ├── exploration.ipynb        # Exploratory Data Analysis
-│   └── modeling.ipynb           # Modeling and analytics workflows
-│
-├── scripts/
-│   ├── clean_data.py            # Data preprocessing
-│   └── analyze.py               # Analysis and reporting
-│
-├── reports/
-│   └── BDA_Case_Study_Report.pdf
-│
-├── requirements.txt
-│
+├── BdaMongodbcleaning.txt
+├── HeartDiseaseTrain-Test.csv
+├── Untitled.ipynb
+├── app.py
+├── bda main report.docx
+├── random_forest_heart_model.pkl
+├── train_model.py
 └── README.md
 ```
 
-> **Note:** Update the directory structure above based on the actual files available in your project.
+### File Description
 
----
+| File/Folder | Description |
+|------------|-------------|
+| templates/ | Contains HTML templates used by the Flask application |
+| confirm_delete.html | Confirmation page for deleting records |
+| dashboard.html | Dashboard page displaying analytics and predictions |
+| index.html | Home page for user input |
+| result.html | Displays prediction results |
+| BdaMongodbcleaning.txt | Notes and MongoDB data cleaning documentation |
+| HeartDiseaseTrain-Test.csv | Dataset used for training and testing |
+| Untitled.ipynb | Jupyter Notebook containing analysis and experiments |
+| app.py | Main Flask application |
+| bda main report.docx | Final project report and documentation |
+| random_forest_heart_model.pkl | Trained Random Forest Machine Learning model |
+| train_model.py | Script used for training the heart disease prediction model |
+| README.md | Project documentation |
+```
+
+### Project Workflow
+
+```text
+HeartDiseaseTrain-Test.csv
+            │
+            ▼
+     train_model.py
+            │
+            ▼
+random_forest_heart_model.pkl
+            │
+            ▼
+         app.py
+            │
+            ▼
+      Flask Web App
+            │
+            ▼
+       HTML Templates
+            │
+            ▼
+   Heart Disease Prediction
+```
 
 ## 📖 Case Study Description
 
